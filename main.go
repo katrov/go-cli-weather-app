@@ -9,6 +9,7 @@ import (
 )
 
 type Response struct {
+	Status            string `json:"status"`
 	Region            string `json:"region"`
 	CurrentConditions struct {
 		Precip   string `json:"precip"`
@@ -23,7 +24,6 @@ type Response struct {
 }
 
 func main() {
-
 	var city string
 	var result Response
 	// https://weatherdbi.herokuapp.com/documentation/v1
@@ -39,23 +39,20 @@ func main() {
 	if err != nil {
 		panic("No response from request!")
 	}
+
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	json.Unmarshal(body, &result)
 
-	if len(PrettyPrint(result.Region)) == 2 {
+	if result.Status == "fail" {
 		panic(city + " invalid city! Please repeat again")
 	}
 
-	color.Green("Region - " + PrettyPrint(result.Region))
-	color.Green("Precip - " + PrettyPrint(result.CurrentConditions.Precip))
-	color.Green("Humidity - " + PrettyPrint(result.CurrentConditions.Humidity))
-	color.Green("Temp - " + PrettyPrint(result.CurrentConditions.Temp.C) + "°C")
-	color.Green("Wind - " + PrettyPrint(result.CurrentConditions.Wind.Km) + "ms")
-}
-
-func PrettyPrint(i interface{}) string {
-	s, _ := json.MarshalIndent(i, "", "\t")
-	return string(s)
+	color.Green("Region - " + result.Region)
+	color.Green("Precip - " + result.CurrentConditions.Precip)
+	color.Green("Humidity - " + result.CurrentConditions.Humidity)
+	//color.Green("Temp - " + strconv.Itoa(result.CurrentConditions.Temp.C) + "°C")
+	color.Green(fmt.Sprintf("Temp -  %d°C", result.CurrentConditions.Temp.C))
+	color.Green(fmt.Sprintf("Wind -  %dms", result.CurrentConditions.Wind.Km))
 }
