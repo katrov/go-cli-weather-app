@@ -26,7 +26,7 @@ type Response struct {
 func main() {
 	var city string
 	var result Response
-	// https://weatherdbi.herokuapp.com/documentation/v1
+	// https://weatherdbi.herokuapp.com/documentation/v1 documentation for weatherdbi
 	const WeatherPublicApi = "https://weatherdbi.herokuapp.com/data/weather/"
 
 	color.Green("Weather Shell app")
